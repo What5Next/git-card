@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import {
   RepoRouteType,
   RepoRouteResponse,
@@ -11,12 +11,21 @@ import {
 } from "@/lib/github";
 
 export async function GET(
-  request: Request,
-  { params }: { params: { owner: string; repo: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ owner: string }> }
 ) {
   const { searchParams } = new URL(request.url);
   const type = searchParams.get("type") as RepoRouteType;
-  const { owner, repo } = params;
+  const repo = searchParams.get("repo");
+
+  const { owner } = await params;
+
+  if (!repo) {
+    return NextResponse.json<GitHubAPIError>(
+      { error: "Repository name is required", status: 400 },
+      { status: 400 }
+    );
+  }
 
   const paramError = validateRequiredParams({ type }, ["type"]);
   if (paramError) {

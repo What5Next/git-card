@@ -43,23 +43,27 @@ export const githubClient: GitHubAPIClient = {
   },
   repos: {
     getInfo: (owner, repo) =>
-      fetchAPI(`/api/github/repos/${owner}/${repo}?type=info`),
+      fetchAPI(`/api/github/repos/${owner}?type=info&repo=${repo}`),
     getCommits: (owner, repo) =>
-      fetchAPI(`/api/github/repos/${owner}/${repo}?type=commits`),
+      fetchAPI(`/api/github/repos/${owner}?type=commits&repo=${repo}`),
     getBranches: (owner, repo) =>
-      fetchAPI(`/api/github/repos/${owner}/${repo}?type=branches`),
+      fetchAPI(`/api/github/repos/${owner}?type=branches&repo=${repo}`),
     getTags: (owner, repo) =>
-      fetchAPI(`/api/github/repos/${owner}/${repo}?type=tags`),
-    getContents: (owner, repo) =>
-      fetchAPI(`/api/github/repos/${owner}/${repo}?type=contents`),
+      fetchAPI(`/api/github/repos/${owner}?type=tags&repo=${repo}`),
+    getContents: (owner, repo, path) =>
+      fetchAPI(
+        `/api/github/repos/${owner}?type=contents&repo=${repo}${
+          path ? `&path=${path}` : ""
+        }`
+      ),
     getReleases: (owner, repo) =>
-      fetchAPI(`/api/github/repos/${owner}/${repo}?type=releases`),
+      fetchAPI(`/api/github/repos/${owner}?type=releases&repo=${repo}`),
     getStargazers: (owner, repo) =>
-      fetchAPI(`/api/github/repos/${owner}/${repo}?type=stargazers`),
+      fetchAPI(`/api/github/repos/${owner}?type=stargazers&repo=${repo}`),
     getForks: (owner, repo) =>
-      fetchAPI(`/api/github/repos/${owner}/${repo}?type=forks`),
+      fetchAPI(`/api/github/repos/${owner}?type=forks&repo=${repo}`),
     getIssues: (owner, repo) =>
-      fetchAPI(`/api/github/repos/${owner}/${repo}?type=issues`),
+      fetchAPI(`/api/github/repos/${owner}?type=issues&repo=${repo}`),
   },
   gists: {
     getPublic: () => fetchAPI("/api/github/gists?type=public"),

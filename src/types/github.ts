@@ -296,17 +296,39 @@ export type GitHubAPIEndpoint = {
   };
   repos: {
     [owner: string]: {
-      [repo: string]: {
-        info: `/api/github/repos/${string}/${string}?type=info`;
-        commits: `/api/github/repos/${string}/${string}?type=commits`;
-        branches: `/api/github/repos/${string}/${string}?type=branches`;
-        tags: `/api/github/repos/${string}/${string}?type=tags`;
-        contents: `/api/github/repos/${string}/${string}?type=contents`;
-        releases: `/api/github/repos/${string}/${string}?type=releases`;
-        stargazers: `/api/github/repos/${string}/${string}?type=stargazers`;
-        forks: `/api/github/repos/${string}/${string}?type=forks`;
-        issues: `/api/github/repos/${string}/${string}?type=issues`;
+      info: (
+        repo: string
+      ) => `/api/github/repos/${string}?type=info&repo=${string}`;
+      commits: (
+        repo: string
+      ) => `/api/github/repos/${string}?type=commits&repo=${string}`;
+      branches: (
+        repo: string
+      ) => `/api/github/repos/${string}?type=branches&repo=${string}`;
+      tags: (
+        repo: string
+      ) => `/api/github/repos/${string}?type=tags&repo=${string}`;
+      contents: {
+        (
+          repo: string
+        ): `/api/github/repos/${string}?type=contents&repo=${string}`;
+        (
+          repo: string,
+          path: string
+        ): `/api/github/repos/${string}?type=contents&repo=${string}&path=${string}`;
       };
+      releases: (
+        repo: string
+      ) => `/api/github/repos/${string}?type=releases&repo=${string}`;
+      stargazers: (
+        repo: string
+      ) => `/api/github/repos/${string}?type=stargazers&repo=${string}`;
+      forks: (
+        repo: string
+      ) => `/api/github/repos/${string}?type=forks&repo=${string}`;
+      issues: (
+        repo: string
+      ) => `/api/github/repos/${string}?type=issues&repo=${string}`;
     };
   };
   gists: {
@@ -367,7 +389,8 @@ export type GitHubAPIClient = {
     ) => Promise<GitHubAPIResponse<GitHubTag[]>>;
     getContents: (
       owner: string,
-      repo: string
+      repo: string,
+      path?: string
     ) => Promise<GitHubAPIResponse<GitHubContent>>;
     getReleases: (
       owner: string,

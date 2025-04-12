@@ -12,11 +12,11 @@ import {
 
 export async function GET(
   request: Request,
-  { params }: { params: { username: string } }
+  { params }: { params: Promise<{ username: string }> }
 ) {
   const { searchParams } = new URL(request.url);
   const type = searchParams.get("type") as UserRouteType;
-  const username = params.username;
+  const { username } = await params;
 
   const paramError = validateRequiredParams({ type }, ["type"]);
   if (paramError) {
