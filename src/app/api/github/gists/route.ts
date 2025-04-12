@@ -1,47 +1,49 @@
 import { NextResponse } from "next/server";
-
-const GITHUB_API_BASE = "https://api.github.com";
-
-async function fetchGitHubAPI(endpoint: string) {
-  const response = await fetch(`${GITHUB_API_BASE}${endpoint}`, {
-    headers: {
-      Accept: "application/vnd.github.v3+json",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`GitHub API error: ${response.status}`);
-  }
-
-  return response.json();
-}
+import {
+  GistRouteType,
+  GistRouteResponse,
+  GitHubAPIError,
+} from "@/types/github";
+import {
+  fetchGitHubAPI,
+  handleGitHubError,
+  validateRequiredParams,
+} from "@/lib/github";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const type = searchParams.get("type");
-  const gistId = searchParams.get("gistId");
+  const type = searchParams.get("type") as GistRouteType;
+
+  const paramError = validateRequiredParams({ type }, ["type"]);
+  if (paramError) {
+    return NextResponse.json(paramError, { status: paramError.status });
+  }
 
   try {
     switch (type) {
       case "public":
-        return NextResponse.json(await fetchGitHubAPI("/gists/public"));
+        return NextResponse.json<GistRouteResponse<"public">>(
+          await fetchGitHubAPI("/gists/public")
+        );
       case "specific":
+        const gistId = searchParams.get("gistId");
         if (!gistId) {
-          return NextResponse.json(
-            { error: "Gist ID is required" },
+          return NextResponse.json<GitHubAPIError>(
+            { error: "Missing gistId parameter", status: 400 },
             { status: 400 }
           );
         }
-        return NextResponse.json(await fetchGitHubAPI(`/gists/${gistId}`));
+        return NextResponse.json<GistRouteResponse<"specific">>(
+          await fetchGitHubAPI(`/gists/${gistId}`)
+        );
       default:
-        return NextResponse.json(
-          { error: "Invalid type parameter" },
+        return NextResponse.json<GitHubAPIError>(
+          { error: "Invalid type parameter", status: 400 },
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error occurred";
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+  } catch (error) {
+    const githubError = handleGitHubError(error);
+    return NextResponse.json(githubError, { status: githubError.status });
   }
 }

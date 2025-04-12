@@ -1,58 +1,58 @@
 import { NextResponse } from "next/server";
-
-const GITHUB_API_BASE = "https://api.github.com";
-
-async function fetchGitHubAPI(endpoint: string) {
-  const response = await fetch(`${GITHUB_API_BASE}${endpoint}`, {
-    headers: {
-      Accept: "application/vnd.github.v3+json",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`GitHub API error: ${response.status}`);
-  }
-
-  return response.json();
-}
+import {
+  UserRouteType,
+  UserRouteResponse,
+  GitHubAPIError,
+} from "@/types/github";
+import {
+  fetchGitHubAPI,
+  handleGitHubError,
+  validateRequiredParams,
+} from "@/lib/github";
 
 export async function GET(
   request: Request,
   { params }: { params: { username: string } }
 ) {
   const { searchParams } = new URL(request.url);
-  const type = searchParams.get("type");
+  const type = searchParams.get("type") as UserRouteType;
   const username = params.username;
+
+  const paramError = validateRequiredParams({ type }, ["type"]);
+  if (paramError) {
+    return NextResponse.json(paramError, { status: paramError.status });
+  }
 
   try {
     switch (type) {
       case "profile":
-        return NextResponse.json(await fetchGitHubAPI(`/users/${username}`));
+        return NextResponse.json<UserRouteResponse<"profile">>(
+          await fetchGitHubAPI(`/users/${username}`)
+        );
       case "repos":
-        return NextResponse.json(
+        return NextResponse.json<UserRouteResponse<"repos">>(
           await fetchGitHubAPI(`/users/${username}/repos`)
         );
       case "followers":
-        return NextResponse.json(
+        return NextResponse.json<UserRouteResponse<"followers">>(
           await fetchGitHubAPI(`/users/${username}/followers`)
         );
       case "following":
-        return NextResponse.json(
+        return NextResponse.json<UserRouteResponse<"following">>(
           await fetchGitHubAPI(`/users/${username}/following`)
         );
       case "gists":
-        return NextResponse.json(
+        return NextResponse.json<UserRouteResponse<"gists">>(
           await fetchGitHubAPI(`/users/${username}/gists`)
         );
       default:
-        return NextResponse.json(
-          { error: "Invalid type parameter" },
+        return NextResponse.json<GitHubAPIError>(
+          { error: "Invalid type parameter", status: 400 },
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error occurred";
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+  } catch (error) {
+    const githubError = handleGitHubError(error);
+    return NextResponse.json(githubError, { status: githubError.status });
   }
 }

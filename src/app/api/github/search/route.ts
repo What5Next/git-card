@@ -1,56 +1,47 @@
 import { NextResponse } from "next/server";
-
-const GITHUB_API_BASE = "https://api.github.com";
-
-async function fetchGitHubAPI(endpoint: string) {
-  const response = await fetch(`${GITHUB_API_BASE}${endpoint}`, {
-    headers: {
-      Accept: "application/vnd.github.v3+json",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`GitHub API error: ${response.status}`);
-  }
-
-  return response.json();
-}
+import {
+  SearchRouteType,
+  SearchRouteResponse,
+  GitHubAPIError,
+} from "@/types/github";
+import {
+  fetchGitHubAPI,
+  handleGitHubError,
+  validateRequiredParams,
+} from "@/lib/github";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const type = searchParams.get("type");
-  const query = searchParams.get("q");
+  const type = searchParams.get("type") as SearchRouteType;
+  const q = searchParams.get("q");
 
-  if (!query) {
-    return NextResponse.json(
-      { error: "Search query is required" },
-      { status: 400 }
-    );
+  const paramError = validateRequiredParams({ type, q }, ["type", "q"]);
+  if (paramError) {
+    return NextResponse.json(paramError, { status: paramError.status });
   }
 
   try {
     switch (type) {
       case "repositories":
-        return NextResponse.json(
-          await fetchGitHubAPI(`/search/repositories?q=${query}`)
+        return NextResponse.json<SearchRouteResponse<"repositories">>(
+          await fetchGitHubAPI(`/search/repositories?q=${q}`)
         );
       case "users":
-        return NextResponse.json(
-          await fetchGitHubAPI(`/search/users?q=${query}`)
+        return NextResponse.json<SearchRouteResponse<"users">>(
+          await fetchGitHubAPI(`/search/users?q=${q}`)
         );
       case "issues":
-        return NextResponse.json(
-          await fetchGitHubAPI(`/search/issues?q=${query}`)
+        return NextResponse.json<SearchRouteResponse<"issues">>(
+          await fetchGitHubAPI(`/search/issues?q=${q}`)
         );
       default:
-        return NextResponse.json(
-          { error: "Invalid type parameter" },
+        return NextResponse.json<GitHubAPIError>(
+          { error: "Invalid type parameter", status: 400 },
           { status: 400 }
         );
     }
-  } catch (error: unknown) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error occurred";
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+  } catch (error) {
+    const githubError = handleGitHubError(error);
+    return NextResponse.json(githubError, { status: githubError.status });
   }
 }
