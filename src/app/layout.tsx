@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Git Card",
-  description: "Generate a card for your git profile",
+  title: "ResuGit",
+  description: "Generate a resume for your git",
 };
 
 export default function RootLayout({
