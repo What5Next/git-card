@@ -17,24 +17,22 @@ import {
   Book,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import Image from "next/image";
 
 interface GitHubUser {
   login: string;
   name: string;
   avatar_url: string;
   html_url: string;
-  bio: string;
-  company: string;
-  location: string;
-  email: string;
+  bio: string | null;
+  company: string | null;
+  location: string | null;
+  email: string | null;
   public_repos: number;
   public_gists: number;
   followers: number;
   following: number;
   created_at: string;
   updated_at: string;
-  hireable: boolean;
 }
 
 interface GitHubRepo {
@@ -85,7 +83,7 @@ interface GitHubIssues {
   closed: number;
 }
 
-interface GitHubData {
+export interface GitHubData {
   user: GitHubUser;
   repos: GitHubRepo[];
   contributions: GitHubContributions;
@@ -96,9 +94,10 @@ interface GitHubData {
 
 interface GitHubProfileProps {
   data: GitHubData;
+  aiSummary: string;
 }
 
-export default function GitHubProfile({ data }: GitHubProfileProps) {
+export default function GitHubProfile({ data, aiSummary }: GitHubProfileProps) {
   return (
     <div className="min-h-screen">
       <div className="max-w-4xl mx-auto">
@@ -108,7 +107,7 @@ export default function GitHubProfile({ data }: GitHubProfileProps) {
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex-shrink-0">
                 <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-2 border-gray-700">
-                  <Image
+                  <img
                     src={data.user.avatar_url}
                     alt={data.user.name}
                     width={100}
@@ -133,18 +132,24 @@ export default function GitHubProfile({ data }: GitHubProfileProps) {
                 </div>
 
                 <div className="flex flex-wrap gap-4 mt-3 text-sm text-gray-400">
-                  <div className="flex items-center gap-1">
-                    <Briefcase className="h-4 w-4" />
-                    <span>{data.user.company}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <MapPin className="h-4 w-4" />
-                    <span>{data.user.location}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Mail className="h-4 w-4" />
-                    <span>{data.user.email}</span>
-                  </div>
+                  {data.user.company && (
+                    <div className="flex items-center gap-1">
+                      <Briefcase className="h-4 w-4" />
+                      <span>{data.user.company}</span>
+                    </div>
+                  )}
+                  {data.user.location && (
+                    <div className="flex items-center gap-1">
+                      <MapPin className="h-4 w-4" />
+                      <span>{data.user.location}</span>
+                    </div>
+                  )}
+                  {data.user.email && (
+                    <div className="flex items-center gap-1">
+                      <Mail className="h-4 w-4" />
+                      <span>{data.user.email}</span>
+                    </div>
+                  )}
                   <div className="flex items-center gap-1">
                     <Calendar className="h-4 w-4" />
                     <span>
@@ -195,7 +200,7 @@ export default function GitHubProfile({ data }: GitHubProfileProps) {
               <FileText className="h-5 w-5 text-gray-300" />
               <h3 className="text-lg font-semibold text-white">AI Summary</h3>
             </div>
-            <p className="text-gray-300 text-sm">{data.user.bio}</p>
+            <p className="text-gray-300 text-sm">{aiSummary}</p>
           </div>
         </div>
 

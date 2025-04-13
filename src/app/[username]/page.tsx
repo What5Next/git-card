@@ -2,19 +2,20 @@
 
 import type React from "react";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Download, Eye, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import GitHubProfile from "@/features/profile/github-profile";
+import GitHubProfile, { GitHubData } from "@/features/profile/github-profile";
 import { githubClient } from "@/lib/github/client";
 import { useParams } from "next/navigation";
+import { GitHubRepo, GitHubUser } from "@/types/github";
 
 // Mock GitHub API data - in a real app, you would fetch this from the GitHub API
 const mockGitHubData = {
   user: {
     login: "johndoe",
     name: "John Doe",
-    avatar_url: "/placeholder.svg?height=200&width=200",
+    avatar_url: "/images/placeholder.svg",
     html_url: "https://github.com/johndoe",
     bio: "Full-stack developer passionate about open source. Building tools that make developers' lives easier.",
     company: "@awesome-company",
@@ -33,7 +34,7 @@ const mockGitHubData = {
       name: "awesome-project",
       html_url: "https://github.com/johndoe/awesome-project",
       description:
-        "A powerful library for building modern web applications with React",
+        "Built a modern web application library using React and TypeScript, focusing on reusable components, UI library integration, and performance optimization.",
       fork: false,
       stargazers_count: 1245,
       watchers_count: 98,
@@ -64,7 +65,7 @@ const mockGitHubData = {
       name: "api-toolkit",
       html_url: "https://github.com/johndoe/api-toolkit",
       description:
-        "A comprehensive toolkit for building and testing RESTful APIs",
+        "Developed an interactive data visualization tool integrating D3.js for creating dynamic and customizable charts and analytics dashboards.",
       fork: false,
       stargazers_count: 543,
       watchers_count: 32,
@@ -93,12 +94,12 @@ const mockGitHubData = {
   organizations: [
     {
       login: "awesome-company",
-      avatar_url: "/placeholder.svg?height=50&width=50",
+      avatar_url: "https://picsum.photos/200/300/?blur​",
       description: "Building the future of web development",
     },
     {
       login: "open-source-collective",
-      avatar_url: "/placeholder.svg?height=50&width=50",
+      avatar_url: "https://picsum.photos/200/300/?blur​",
       description: "Advancing open source software",
     },
   ],
@@ -121,11 +122,19 @@ export default function ResumeTemplate() {
   const [editMode, setEditMode] = useState(false);
   const [gitHubData, setGitHubData] = useState(mockGitHubData);
 
+  const [userProfile, setUserProfile] = useState<GitHubUser | null>(null);
+  const [repos, setRepos] = useState<GitHubRepo[]>([]);
+
   const getUserProfile = async (username: string) => {
     const res = await githubClient.users.getProfile(username);
 
-    console.log(res.data);
-    return res.data;
+    setUserProfile(res.data);
+  };
+
+  const getRepos = async (username: string) => {
+    const res = await githubClient.users.getRepos(username);
+
+    setRepos(res.data ?? []);
   };
 
   // In a real app, you would fetch data from GitHub API here
@@ -134,11 +143,72 @@ export default function ResumeTemplate() {
     // Example: fetch(`https://api.github.com/users/${username}`)
     console.log("Would fetch data for:", username);
     getUserProfile(username);
+    getRepos(username);
 
     setGitHubData(mockGitHubData);
 
     document.title = `${username} - ResuGit`;
   }, [username]);
+
+  const data: GitHubData | null = useMemo(() => {
+    if (!userProfile) return null;
+
+    return {
+      user: {
+        login: userProfile.login,
+        name: userProfile.name,
+        avatar_url: userProfile.avatar_url,
+        html_url: userProfile.html_url,
+        bio:
+          userProfile.bio ??
+          "Full-stack developer passionate about open source. Building tools that make developers' lives easier.",
+        company: userProfile.company,
+        location: userProfile.location,
+        email: userProfile.email,
+        public_repos: userProfile.public_repos,
+        public_gists: userProfile.public_gists,
+        followers: userProfile.followers,
+        following: userProfile.following,
+        created_at: userProfile.created_at,
+        updated_at: userProfile.updated_at,
+      },
+      repos: repos.map((repo) => ({
+        name: repo.name,
+        html_url: repo.html_url,
+        description: repo.description ?? "",
+        fork: repo.fork,
+        language: repo.language ?? "",
+        stargazers_count: repo.stargazers_count,
+        watchers_count: repo.watchers_count,
+        forks_count: repo.forks_count,
+        open_issues_count: repo.open_issues_count,
+        topics: repo.topics,
+        created_at: repo.created_at,
+        updated_at: repo.updated_at,
+        pushed_at: repo.pushed_at,
+      })),
+      contributions: {
+        total: 0,
+        last_year: 0,
+        current_streak: 0,
+        longest_streak: 0,
+        by_day: [],
+        by_language: [],
+      },
+      organizations: [],
+      pullRequests: {
+        total: 0,
+        merged: 0,
+        open: 0,
+        closed: 0,
+      },
+      issues: {
+        total: 0,
+        open: 0,
+        closed: 0,
+      },
+    } satisfies GitHubData;
+  }, [userProfile, repos]);
 
   return (
     <div className="min-h-screen p-6 md:p-10 ">
@@ -170,7 +240,12 @@ export default function ResumeTemplate() {
           </div>
         </div>
 
-        <GitHubProfile data={gitHubData} />
+        {data && (
+          <GitHubProfile
+            data={{ ...gitHubData, user: data.user }}
+            aiSummary="Experienced full-stack developer with a passion for open-source contributions, specializing in building tools that streamline the development process. Committed to creating innovative solutions that enhance productivity for developers worldwide."
+          />
+        )}
 
         <div className="flex justify-center items-center gap-[20px]">
           <div
