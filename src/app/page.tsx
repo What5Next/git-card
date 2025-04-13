@@ -97,7 +97,7 @@ export default function Home() {
             placeholder="Enter your git username"
           />
           <Button
-            className="absolute rounded-[4px]  right-1 h-12 -translate-y-1/2 top-1/2 bg-white text-black !focus:bg-white"
+            className="absolute rounded-[4px]  right-1 h-12 -translate-y-1/2 top-1/2 bg-white text-black hover:text-white"
             type="submit"
           >
             Create My Resume
