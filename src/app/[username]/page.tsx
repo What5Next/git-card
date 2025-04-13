@@ -6,6 +6,8 @@ import { useState, useEffect } from "react";
 import { Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import GitHubProfile from "@/features/profile/github-profile";
+import { githubClient } from "@/lib/github/client";
+import { useParams } from "next/navigation";
 
 // Mock GitHub API data - in a real app, you would fetch this from the GitHub API
 const mockGitHubData = {
@@ -114,15 +116,24 @@ const mockGitHubData = {
 };
 
 export default function ResumeTemplate() {
+  const { username } = useParams<{ username: string }>();
+
   const [editMode, setEditMode] = useState(false);
   const [gitHubData, setGitHubData] = useState(mockGitHubData);
-  const [username, setUsername] = useState("johndoe");
+
+  const getUserProfile = async (username: string) => {
+    const res = await githubClient.users.getProfile(username);
+
+    console.log(res.data);
+    return res.data;
+  };
 
   // In a real app, you would fetch data from GitHub API here
   useEffect(() => {
     // This would be replaced with actual API calls
     // Example: fetch(`https://api.github.com/users/${username}`)
     console.log("Would fetch data for:", username);
+    getUserProfile(username);
 
     setGitHubData(mockGitHubData);
   }, [username]);
@@ -141,7 +152,6 @@ export default function ResumeTemplate() {
                 <input
                   type="text"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
                   placeholder="GitHub username"
                   className="px-3 py-2 rounded-md bg-gray-800/50 border border-gray-700 text-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/50"
                 />

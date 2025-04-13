@@ -1,23 +1,21 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { githubClient } from "@/lib/github/client";
 
 const UserNameInputName = "username";
 
 export default function Home() {
+  const router = useRouter();
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
     const username = formData.get(UserNameInputName) as string;
 
-    const res = await githubClient.users.getProfile(username);
-
-    console.log(res.data);
-
-    alert("check console.log");
+    router.push(`/${username}`);
   };
 
   return (

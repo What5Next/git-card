@@ -17,6 +17,7 @@ import {
   Book,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import Image from "next/image";
 
 interface GitHubUser {
   login: string;
@@ -107,10 +108,11 @@ export default function GitHubProfile({ data }: GitHubProfileProps) {
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex-shrink-0">
                 <div className="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-2 border-gray-700">
-                  <img
+                  <Image
                     src={data.user.avatar_url}
                     alt={data.user.name}
-                    className="w-full h-full object-cover"
+                    width={100}
+                    height={100}
                   />
                 </div>
               </div>
