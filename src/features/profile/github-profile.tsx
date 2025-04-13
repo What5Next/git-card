@@ -100,10 +100,10 @@ interface GitHubProfileProps {
 
 export default function GitHubProfile({ data }: GitHubProfileProps) {
   return (
-    <div className="min-h-screen p-6 md:p-10 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+    <div className="min-h-screen">
       <div className="max-w-4xl mx-auto">
         {/* Profile Header */}
-        <div className="bg-gray-800/80 backdrop-blur-md rounded-lg shadow-xl mb-6 overflow-hidden border border-gray-700/50">
+        <div className="bg-[#737373]/20 backdrop-blur-md rounded-[8px] shadow-xl mb-6 overflow-hidden border border-white/20">
           <div className="p-6">
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex-shrink-0">
@@ -160,25 +160,25 @@ export default function GitHubProfile({ data }: GitHubProfileProps) {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
-              <div className="bg-gray-700/50 backdrop-blur-sm rounded-lg p-3 text-center">
+              <div className="bg-gray-700/50 backdrop-blur-sm rounded-[8px] p-3 text-center">
                 <div className="text-xl font-bold text-white">
                   {data.user.public_repos}
                 </div>
                 <div className="text-xs text-gray-400">Repositories</div>
               </div>
-              <div className="bg-gray-700/50 backdrop-blur-sm rounded-lg p-3 text-center">
+              <div className="bg-gray-700/50 backdrop-blur-sm rounded-[8px] p-3 text-center">
                 <div className="text-xl font-bold text-white">
                   {data.user.followers}
                 </div>
                 <div className="text-xs text-gray-400">Followers</div>
               </div>
-              <div className="bg-gray-700/50 backdrop-blur-sm rounded-lg p-3 text-center">
+              <div className="bg-gray-700/50 backdrop-blur-sm rounded-[8px] p-3 text-center">
                 <div className="text-xl font-bold text-white">
                   {data.user.following}
                 </div>
                 <div className="text-xs text-gray-400">Following</div>
               </div>
-              <div className="bg-gray-700/50 backdrop-blur-sm rounded-lg p-3 text-center">
+              <div className="bg-gray-700/50 backdrop-blur-sm rounded-[8px] p-3 text-center">
                 <div className="text-xl font-bold text-white">
                   {data.user.public_gists}
                 </div>
@@ -189,7 +189,7 @@ export default function GitHubProfile({ data }: GitHubProfileProps) {
         </div>
 
         {/* AI Summary */}
-        <div className="bg-gray-800/80 backdrop-blur-md rounded-lg shadow-xl mb-6 overflow-hidden border border-gray-700/50">
+        <div className="bg-[#737373]/20 backdrop-blur-md rounded-[8px] shadow-xl mb-6 overflow-hidden border border-white/20">
           <div className="p-6">
             <div className="flex items-center gap-2 mb-3">
               <FileText className="h-5 w-5 text-gray-300" />
@@ -200,7 +200,7 @@ export default function GitHubProfile({ data }: GitHubProfileProps) {
         </div>
 
         {/* Top Repositories */}
-        <div className="bg-gray-800/80 backdrop-blur-md rounded-lg shadow-xl mb-6 overflow-hidden border border-gray-700/50">
+        <div className="bg-[#737373]/20 backdrop-blur-md rounded-[8px] shadow-xl mb-6 overflow-hidden border border-white/20">
           <div className="p-6">
             <div className="flex items-center gap-2 mb-4">
               <GitBranch className="h-5 w-5 text-gray-300" />
@@ -212,7 +212,7 @@ export default function GitHubProfile({ data }: GitHubProfileProps) {
             {data.repos.map((repo, index) => (
               <div
                 key={index}
-                className="bg-gray-700/30 backdrop-blur-sm rounded-lg p-5 mb-4"
+                className="bg-gray-700/30 backdrop-blur-sm rounded-[8px] p-5 mb-4"
               >
                 <div className="flex justify-between items-start mb-2">
                   <h4 className="text-lg font-medium text-white">
@@ -283,7 +283,7 @@ export default function GitHubProfile({ data }: GitHubProfileProps) {
         </div>
 
         {/* Contribution Activity */}
-        <div className="bg-gray-800/80 backdrop-blur-md rounded-lg shadow-xl mb-6 overflow-hidden border border-gray-700/50">
+        <div className="bg-[#737373]/20 backdrop-blur-md rounded-[8px] shadow-xl mb-6 overflow-hidden border border-white/20">
           <div className="p-6">
             <div className="flex items-center gap-2 mb-4">
               <Activity className="h-5 w-5 text-gray-300" />
@@ -293,13 +293,13 @@ export default function GitHubProfile({ data }: GitHubProfileProps) {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <div className="bg-gray-700/30 backdrop-blur-sm rounded-lg p-4 text-center">
+              <div className="bg-gray-700/30 backdrop-blur-sm rounded-[8px] p-4 text-center">
                 <div className="text-2xl font-bold text-white">
                   {data.contributions.total}
                 </div>
                 <div className="text-xs text-gray-400">Total Contributions</div>
               </div>
-              <div className="bg-gray-700/30 backdrop-blur-sm rounded-lg p-4 text-center">
+              <div className="bg-gray-700/30 backdrop-blur-sm rounded-[8px] p-4 text-center">
                 <div className="text-2xl font-bold text-white">
                   {data.contributions.current_streak}
                 </div>
@@ -307,7 +307,7 @@ export default function GitHubProfile({ data }: GitHubProfileProps) {
                   Current Streak (days)
                 </div>
               </div>
-              <div className="bg-gray-700/30 backdrop-blur-sm rounded-lg p-4 text-center">
+              <div className="bg-gray-700/30 backdrop-blur-sm rounded-[8px] p-4 text-center">
                 <div className="text-2xl font-bold text-white">
                   {data.contributions.last_year}
                 </div>
@@ -317,7 +317,7 @@ export default function GitHubProfile({ data }: GitHubProfileProps) {
               </div>
             </div>
 
-            <div className="bg-gray-700/30 backdrop-blur-sm rounded-lg p-4 mb-6">
+            <div className="bg-gray-700/30 backdrop-blur-sm rounded-[8px] p-4 mb-6">
               <h4 className="font-medium mb-3 text-white">Languages</h4>
               <div className="space-y-3">
                 {data.contributions.by_language.map((lang, index) => (
@@ -345,7 +345,7 @@ export default function GitHubProfile({ data }: GitHubProfileProps) {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-gray-700/30 backdrop-blur-sm rounded-lg p-4">
+              <div className="bg-gray-700/30 backdrop-blur-sm rounded-[8px] p-4">
                 <div className="flex items-center gap-2 mb-3">
                   <GitPullRequest className="h-4 w-4 text-gray-300" />
                   <h4 className="font-medium text-white">Pull Requests</h4>
@@ -366,7 +366,7 @@ export default function GitHubProfile({ data }: GitHubProfileProps) {
                 </div>
               </div>
 
-              <div className="bg-gray-700/30 backdrop-blur-sm rounded-lg p-4">
+              <div className="bg-gray-700/30 backdrop-blur-sm rounded-[8px] p-4">
                 <div className="flex items-center gap-2 mb-3">
                   <Book className="h-4 w-4 text-gray-300" />
                   <h4 className="font-medium text-white">Issues</h4>
@@ -391,7 +391,7 @@ export default function GitHubProfile({ data }: GitHubProfileProps) {
         </div>
 
         {/* Organizations */}
-        <div className="bg-gray-800/80 backdrop-blur-md rounded-lg shadow-xl mb-6 overflow-hidden border border-gray-700/50">
+        <div className="bg-[#737373]/20 backdrop-blur-md rounded-[8px] shadow-xl mb-6 overflow-hidden border border-white/20">
           <div className="p-6">
             <div className="flex items-center gap-2 mb-4">
               <Users className="h-5 w-5 text-gray-300" />
@@ -404,7 +404,7 @@ export default function GitHubProfile({ data }: GitHubProfileProps) {
               {data.organizations.map((org, index) => (
                 <div
                   key={index}
-                  className="bg-gray-700/30 backdrop-blur-sm rounded-lg p-4 flex items-center gap-4"
+                  className="bg-gray-700/30 backdrop-blur-sm rounded-[8px] p-4 flex items-center gap-4"
                 >
                   <div className="w-10 h-10 rounded-md overflow-hidden">
                     <img
@@ -424,7 +424,7 @@ export default function GitHubProfile({ data }: GitHubProfileProps) {
         </div>
 
         {/* GitHub Achievements */}
-        <div className="bg-gray-800/80 backdrop-blur-md rounded-lg shadow-xl mb-6 overflow-hidden border border-gray-700/50">
+        <div className="bg-[#737373]/20 backdrop-blur-md rounded-[8px] shadow-xl mb-6 overflow-hidden border border-white/20">
           <div className="p-6">
             <div className="flex items-center gap-2 mb-4">
               <Award className="h-5 w-5 text-gray-300" />
@@ -434,13 +434,13 @@ export default function GitHubProfile({ data }: GitHubProfileProps) {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-gray-700/30 backdrop-blur-sm rounded-lg p-4 text-center">
+              <div className="bg-gray-700/30 backdrop-blur-sm rounded-[8px] p-4 text-center">
                 <div className="text-2xl font-bold text-white">
                   {data.contributions.longest_streak}
                 </div>
                 <div className="text-sm text-gray-300">Longest Streak</div>
               </div>
-              <div className="bg-gray-700/30 backdrop-blur-sm rounded-lg p-4 text-center">
+              <div className="bg-gray-700/30 backdrop-blur-sm rounded-[8px] p-4 text-center">
                 <div className="text-2xl font-bold text-white">
                   {Math.floor(data.contributions.total / 100)}
                 </div>
@@ -448,7 +448,7 @@ export default function GitHubProfile({ data }: GitHubProfileProps) {
                   Contribution Milestones
                 </div>
               </div>
-              <div className="bg-gray-700/30 backdrop-blur-sm rounded-lg p-4 text-center">
+              <div className="bg-gray-700/30 backdrop-blur-sm rounded-[8px] p-4 text-center">
                 <div className="text-2xl font-bold text-white">
                   {Math.floor(data.pullRequests.merged / 10)}
                 </div>
